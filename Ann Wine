@@ -1,0 +1,31 @@
+import tensorflow as tf
+import keras
+from keras import backend as K
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from keras.models import Sequential
+from keras.layers import Dense
+from ann_visualizer.visualize import ann_viz
+
+wine = datasets.load_wine()
+
+# wine = datasets.load_diabetes()
+
+x = wine.data
+y = wine.target
+
+x_train, x_test, y_train, y_test = train_test_split(x,y,random_state = 0, test_size=0.20)
+y_train = keras.utils.to_categorical(y_train-1,3)
+y_test = keras.utils.to_categorical(y_test-1,3)
+
+model = Sequential()
+model.add(Dense(10,input_dim = 13,activation = 'relu'))
+model.add(Dense(8,activation = 'relu'))
+model.add(Dense(6,activation = 'relu'))
+model.add(Dense(3,activation = 'softmax'))
+model.compile(loss = 'categorical_crossentropy',optimizer = 'adam',metrics = ['accuracy'])
+model.fit(x_train, y_train, batch_size=15, epochs=2000, validation_data=(x_test, y_test))
+
+acc = model.evaluate(x_test,y_test)
+print(acc)
+ann_viz(model, title = " my neural network")

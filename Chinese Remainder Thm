@@ -1,0 +1,29 @@
+#include <iostream>
+#include <math.h>
+using namespace std;
+int main()
+{
+	int input_count, i, a[10], m[10], y[10], M = 1, X = 0;
+	cout << "\nEnter number of equations :";
+	cin >> input_count;
+	for (i = 0; i < input_count; i++)
+	{
+		cout << "\nFor equation " << i + 1 << " x = a mod m, enter values of a and m :";
+		cin >> a[i] >> m[i];
+	}
+	cout << "\nEquations :\n";
+	
+	for (i = 0; i < input_count; i++)
+	{
+	    	cout << "Equation " << i + 1 << " : x = " << a[i] << " mod " << m[i] << "\n";
+
+		M *= m[i];
+	
+		y[i] = fmod(pow(M / m[i], m[i] - 2), m[i]); //yi = Inverse(M/mi) mod mi
+		X += (a[i] * (M / m[i]) * y[i]); // X = (ai*Mi*y*) mod M
+
+	}
+	cout << "\nValue of M is :" << M << "\n";
+	X = X % M;
+	cout << "\nValue of X is " << X<< "\n";
+}

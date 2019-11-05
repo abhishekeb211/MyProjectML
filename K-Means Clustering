@@ -7,9 +7,10 @@ from numpy import mean, sqrt, square, arange
 from sklearn import datasets
 
 # dataset =datasets.load_wine()
-dataset=datasets.load_iris()
-# cancer=datasets.load_breast_cancer()
-df=pd.DataFrame({'x':dataset.data[:,0],'y':dataset.data[: ,1],'cluster' : dataset.target}) #clusters on 3 and 4 th column
+# dataset=datasets.load_iris()
+dataset=datasets.load_breast_cancer()
+print(dataset.feature_names)
+df=pd.DataFrame({'x':dataset.data[:,1],'y':dataset.data[: ,2],'cluster' : dataset.target}) #clusters on 3 and 4 th column
 
 np.random.seed(200)
 k = 3 # NO OF GROUP TO CREATE OR CLUSTERS
@@ -62,8 +63,6 @@ def plot(T):
     fig.savefig(t)
     plt.show()
     
-    return fig
-
 
 def update(k):
     for i in centroids.keys():
@@ -77,8 +76,6 @@ df = assignment(df, centroids)
 plot("Assignment")
 old_centroids = copy.deepcopy(centroids)
 centroids = update(centroids)
-# NewMethod()
-
 
 while True:
     

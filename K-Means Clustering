@@ -1,0 +1,94 @@
+import copy
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from numpy import mean, sqrt, square, arange
+
+from sklearn import datasets
+
+# dataset =datasets.load_wine()
+dataset=datasets.load_iris()
+# cancer=datasets.load_breast_cancer()
+df=pd.DataFrame({'x':dataset.data[:,0],'y':dataset.data[: ,1],'cluster' : dataset.target}) #clusters on 3 and 4 th column
+
+np.random.seed(200)
+k = 3 # NO OF GROUP TO CREATE OR CLUSTERS
+
+centroids = {
+        i+1: [(df.loc[df['cluster'] == i]['x'].mean()),(df.loc[df['cluster'] == i]['y'].mean())]
+            for i in range(k)
+    }# Dictionary
+colmap = {1: 'r', 2: 'g', 3: 'b',4: 'm',5: 'c'} # COLOR CODE AS PER K VALUE 
+marker={1:'P',2: 'v',3: '*',4:'D',5:'X'}
+i=0
+
+def InitaInitialise():
+    
+    fig = plt.figure(figsize=(20,20))#SIZE IN CM 
+    plt.scatter(df['x'], df['y'], color='k')#'c' 
+    for i in centroids.keys():
+        plt.scatter(*centroids[i], color=colmap[i]) #PLACE POINTS
+    plt.title('SCATTERED POINTS')#TITLE
+    fig.savefig('SCATTERED POINTS')
+
+    plt.tight_layout()
+    plt.show()
+
+
+def assignment(df, centroids):
+    for i in centroids.keys():
+        # sqrt((x1 - x2)^2 - (y1 - y2)^2)
+        df['distance_from_{}'.format(i)] = (
+            np.sqrt(
+                (df['x'] - centroids[i][0]) ** 2
+                + (df['y'] - centroids[i][1]) ** 2))
+    centroid_distance_cols = ['distance_from_{}'.format(i) for i in centroids.keys()]
+    df['closest'] = df.loc[:, centroid_distance_cols].idxmin(axis=1)
+    df['closest'] = df['closest'].map(lambda x: int(x.lstrip('distance_from_')))
+    df['color'] = df['closest'].map(lambda x: colmap[x])
+    return df
+
+def plot(T):
+    
+    fig = plt.figure(figsize=(20, 20))
+    plt.scatter(df['x'], df['y'], color=df['color'], alpha=0.7, edgecolor='k') #ALPHA VALUE DECREASE FADE COLOUR
+    plt.title(T)#TITLE
+
+    for i in centroids.keys():
+        plt.scatter(*centroids[i], color=colmap[i],marker=marker[i],s=300)
+    plt.tight_layout()
+    t=""
+    t=t+"{}.png".format(i)
+    fig.savefig(t)
+    plt.show()
+    
+    return fig
+
+
+def update(k):
+    for i in centroids.keys():
+        centroids[i][0] = np.mean(df[df['closest'] == i]['x'])
+        centroids[i][1] = np.mean(df[df['closest'] == i]['y'])
+    return k
+
+    
+InitaInitialise()
+df = assignment(df, centroids)
+plot("Assignment")
+old_centroids = copy.deepcopy(centroids)
+centroids = update(centroids)
+# NewMethod()
+
+
+while True:
+    
+    closest_centroids = df['closest'].copy(deep=True)
+    centroids = update(centroids)
+    df = assignment(df,centroids)
+    plot(i)
+    i+=1
+    if closest_centroids.equals(df['closest']):
+        break
+
+print("Number of  iteration required",i)
+# print(df.head(50))

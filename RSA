@@ -51,3 +51,125 @@ public class RSA {
         return (new BigInteger(message)).modPow(d, n).toByteArray();
     }
 }
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+import java.util.*;
+import java.math.*;
+ 
+class RSA
+{
+ public static void main(String args[])
+ {
+ Scanner sc=new Scanner(System.in);
+ int p,q,n,z,d=0,e,i;
+ System.out.println("Enter the number to be encrypted and decrypted");
+ int msg=sc.nextInt();
+ double c;
+ BigInteger msgback; 
+ System.out.println("Enter 1st prime number p");
+ p=sc.nextInt();
+ System.out.println("Enter 2nd prime number q");
+ q=sc.nextInt();
+ 
+ n=p*q;
+ z=(p-1)*(q-1);
+ System.out.println("the value of z = "+z); 
+ 
+ for(e=2;e<z;e++)
+ {
+ if(gcd(e,z)==1)            // e is for public key exponent
+ { 
+ break;
+ }
+ }
+ System.out.println("the value of e = "+e); 
+ for(i=0;i<=9;i++)
+ {
+ int x=1+(i*z);
+ if(x%e==0)      //d is for private key exponent
+ {
+ d=x/e;
+ break;
+ }
+ }
+ System.out.println("the value of d = "+d); 
+ c=(Math.pow(msg,e))%n;
+ System.out.println("Encrypted message is : -");
+ System.out.println(c);
+                //converting int value of n to BigInteger
+ BigInteger N = BigInteger.valueOf(n);
+ //converting float value of c to BigInteger
+ BigInteger C = BigDecimal.valueOf(c).toBigInteger();
+ msgback = (C.pow(d)).mod(N);
+ System.out.println("Derypted message is : -");
+ System.out.println(msgback);
+ 
+ }
+ 
+ static int gcd(int e, int z)
+ {
+ if(e==0)
+ return z; 
+ else
+ return gcd(z%e,e);
+ }
+}
